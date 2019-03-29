@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "leaflet": "^1.4.0",
         "select2": "^4.0.6-rc.1"
     }
 }

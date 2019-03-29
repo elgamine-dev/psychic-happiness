@@ -1,4 +1,5 @@
 require('./bootstrap');
+const L = require('leaflet')
 require('select2')
 
 let map;

@@ -62,21 +62,45 @@
                 margin-bottom: 30px;
             }
 
-            #map { 
-                height: 100vh; 
-                width:100vw; 
+            #map {
+                height: 100vh;
+                width:100%;
+            }
+            #app {
+                height: 100vh;
+
+                width:100vw;
+                display: grid;
+                grid-template-columns: 300px 1fr;
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="map"></div>
+        <div id="app">
+            <aside>
+                <div>
+                    <select name="city" id="city" class="city-select">
+                        <option value="">-</option>
+                        @foreach($cities as $c)
+                        <option value="{{$c}}">{{ucfirst($c)}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </aside>
+            <div id="map"></div>
+        </div>
 
          <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
    crossorigin=""></script>
-   <script src="{{asset('js/app.js')}}"></script> 
+   <script src="{{asset('js/app.js')}}"></script>
+
+   <script>
+
+   </script>
     </body>
 </html>

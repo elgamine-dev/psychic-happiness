@@ -12,14 +12,22 @@
 */
 
 Route::get('/', function () {
-    $cities = Trajet::orderBy('commune')->get('commune')->map(function($c){ return $c->commune;})->unique();
+    $cities = Trajet::orderBy('field_commune')->get('field_commune')->map(function($c){ return $c->field_commune;})->unique();
     return view('welcome', compact('cities'));
 });
 
 
 Route::get('/api/trajets/{commune}', function( $commune) {
     return [
-        "par_trajet" => Trajet::whereCommune(strtoupper($commune))->get(),
-        "par_commune" => Commune::whereCommune(strtoupper($commune))->first()
+        "par_trajet" => Trajet::where('field_commune', strtoupper($commune))->get(),
+        "par_commune" => Commune::where('field_commune', strtoupper($commune))->first()
+    ];
+});
+
+
+
+Route::get('/api/commune/{commune}', function( $commune) {
+    return [
+        "par_commune" => Commune::where('field_commune', strtoupper($commune))->first()
     ];
 });

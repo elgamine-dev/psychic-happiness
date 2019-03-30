@@ -27,7 +27,7 @@ class Trajets extends Migration
 
                     if ($row === 1) {
                         for ($c = 0; $c < $num; $c++) {
-                            $table->string($data[$c])->nullable();
+                            $table->string("field_".$data[$c])->nullable();
                         }
                         break;
                     }
@@ -48,7 +48,7 @@ class Trajets extends Migration
 
                     if ($row === 1) {
                         for ($c = 0; $c < $num; $c++) {
-                            $table->string($data[$c])->nullable();
+                            $table->string("field_".$data[$c])->nullable();
                         }
                         break;
                     }

@@ -30,7 +30,7 @@ class PopulateTrajts extends Migration
                 $formatted = [];
 
                 for ($c = 0; $c < $num; $c++) {
-                    $formatted[$headers[$c]] = utf8_encode($data[$c]);
+                    $formatted["field_".$headers[$c]] = utf8_encode($data[$c]);
                 }
 
                 DB::table('trajets')->insert($formatted);

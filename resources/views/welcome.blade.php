@@ -71,7 +71,38 @@
 
                 width:100vw;
                 display: grid;
-                grid-template-columns: 300px 1fr;
+                grid-template-columns: 500px 1fr;
+            }
+            .visually-hidden {
+                border: 0;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+            span.help {
+                border-radius: 50%;
+                border: 1px solid #333;
+                display: inline-block;
+                width: 2ch;
+                height: 2ch;
+                text-align: center;
+                font-family: monospace;
+                transform: scale(.8);
+            }
+
+            .cities {
+                display:flex;
+            }
+            .cities section {
+                flex:50%;
+                padding:10px;
+            }
+            .cities section#origin {
+                border-right:1px solid #ccc;
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
@@ -90,6 +121,15 @@
                         @endforeach
                     </select>
                 </div>
+                <div>
+                    <button id="example">Tlse</button>
+                    <button action="center">Centrer</button>
+                </div>
+                <div class="cities">
+                    <section id="origin"></section>
+                    <section id="destination"></section>
+                </div>
+
             </aside>
             <div id="map"></div>
         </div>

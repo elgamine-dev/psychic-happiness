@@ -34,7 +34,7 @@ $(document).ready(function () {
 
 
     originSelect.select2({ width: '100%' });
-    destSelect.select2({ width: '100%', tags: true });
+    destSelect.select2({ width: '100%'});
 
     map = L.map('map').setView([43.568, 1.404], 13);
 
@@ -72,11 +72,25 @@ function listeners() {
 
     map.on('popupopen', (e) =>{
         console.log(e.popup._source.options._data)
-        if (typeof e.popup._source.options._data !== 'undefined') {
-            const commune = e.popup._source.options._data.destination.nom
-            $.get(`/api/commune/${commune}`).then(updateDestination)
+        if (typeof e.popup._source.options._data === 'undefined') {
+            return false;
         }
 
+        const commune = e.popup._source.options._data.destination
+        $.get(`/api/commune/${commune.nom}`).then(updateDestination)
+
+
+        if (destSelect.val() !== e.popup._source.options._data._pos) {
+            destSelect.val(e.popup._source.options._data._pos).trigger('change')
+        }
+
+        const boundaries = [
+            [commune.lon, commune.lat],
+            [store.current.lat, store.current.lon]
+        ]
+
+        console.log(boundaries)
+        map.fitBounds(boundaries, {padding:[100, 100]})
     })
 }
 
@@ -125,7 +139,6 @@ function updateDestination(data) {
 
 
 function render(sel, data) {
-    console.warn(data)
     const tpl = template(data);
     sel.html(tpl)
 }
@@ -135,11 +148,18 @@ function template({name, commune}) {
     <dt title="${definition}">${name} <span class="help">?</span><dfn class="visually-hidden" title="${definition}">${definition}</dfn></dt>
     <dd>${prefix} ${value} ${postfix}</dd>
     `);
+    const sections = ({section, entries}) => {
+        const title = section && `<h4>${section}</h4>` || ''
+
+        return `
+        ${title}
+        ${entries.map(details).reduce(html, '')}
+        `
+    };
     return `
         <div>
-            <h3>${name}</h3>
             <dl>
-                ${serializeCommune(commune).map(details).reduce(html, '')}
+                ${serializeCommune(commune).map(sections).reduce(html, '')}
             </dl>
         </div>
     `
@@ -152,11 +172,21 @@ function html (carry,fragment) {
 function serializeCommune (entry) {
     try {
         return [
-            {...getDefinition('commune', 'meta.habitants'), value: humanNumber(entry.meta.habitants)},
-            {...getDefinition('commune', 'meta.menages'), value: humanNumber(entry.meta.menages)},
-            {...getDefinition('commune', 'meta.emplois'), value: humanNumber(entry.meta.emplois)},
-            {...getDefinition('commune', 'actifs'), value: humanNumber(entry.actifs.y2015)},
-            {...getDefinition('commune', 'meta.revenu_median'), value: euros(entry.meta.revenu_median)},
+            {section: false, entries: [
+                {...getDefinition('commune', 'meta.habitants'), value: humanNumber(entry.meta.habitants)},
+                {...getDefinition('commune', 'meta.menages'), value: humanNumber(entry.meta.menages)},
+                {...getDefinition('commune', 'meta.emplois'), value: humanNumber(entry.meta.emplois)},
+                {...getDefinition('commune', 'actifs'), value: humanNumber(entry.actifs.y2015)},
+                {...getDefinition('commune', 'meta.revenu_median'), value: euros(entry.meta.revenu_median)},
+            ]},
+            {section: "Déplacements Internes", entries:[
+                {...getDefinition('commune', 'inter.sansvoiture'), value: humanNumber(entry.inter.y2015.sansvoiture)},
+                {...getDefinition('commune', 'inter.voiture'), value: humanNumber(entry.inter.y2015.voiture)},
+            ]},
+            {section: "Déplacements Externes", entries:[
+                {...getDefinition('commune', 'extra.voiture'), value: humanNumber(entry.extra.y2015.voiture)},
+                {...getDefinition('commune', 'extra.nb'), value: humanNumber(entry.extra.y2014.nb)},
+            ]},
         ]
     } catch(e) {
         console.error(e)
@@ -166,9 +196,10 @@ function serializeCommune (entry) {
 
 function populateDestSelect() {
 
-    const sel = destSelect.empty().trigger('change')
-    const values = store.markers.map((s, pos)=>{
+    const sel = destSelect.empty().val(null).trigger('change')
+    const values = store.markers.map(s =>{
         const data = s.options._data.destination
+        const pos = s.options._data._pos;
         return {id:pos, text: data.nom}
     })
 
@@ -219,9 +250,10 @@ function co2(value) {
 }
 
 
-function Trajet (data) {
+function Trajet (data, position) {
     return {
         _id: data.id,
+        _pos: position,
         origin: {
             nom: data.field_commune,
             departement: data.field_departement,
@@ -406,11 +438,9 @@ function getDefinition(model, prop) {
 
 
     if(typeof defs[prop] !== 'undefined') {
-        console.warn('found definition', defs[prop])
         return defs[prop]
     }
-    throw new Error('Cant fond this definition ' + prop)
-    return {name:"woot", value:'n/a', prefix:'', postfix:'', definition: "/!\\"}
+    throw new Error('Cant find this definition ' + prop)
 }
 
 

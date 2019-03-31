@@ -85,13 +85,15 @@
             }
             span.help {
                 border-radius: 50%;
-                border: 1px solid #333;
+                border: 1px solid #aaa;
+                color: #aaa;
                 display: inline-block;
                 width: 2ch;
                 height: 2ch;
                 text-align: center;
                 font-family: monospace;
                 transform: scale(.8);
+                cursor: pointer;
             }
 
             .cities {
@@ -110,6 +112,14 @@
             .cities .origin {
                 border-right:1px solid #ccc;
             }
+            dl h4 {
+                margin-bottom:3px;
+                margin-top:5px;
+            }
+            aside {
+                background-color: #333;
+                color: #ccc;
+            }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
@@ -119,9 +129,10 @@
     <body>
         <div id="app">
             <aside>
-
                 <div>
+                    @if($debug)
                     <button id="example">Tlse</button>
+                    @endif
                     <button action="center">Centrer</button>
                 </div>
                 <div class="cities">
@@ -151,10 +162,19 @@
         </div>
 
 
+   <script>
+       @if($debug)
+        window.debug = true;
+        @endif
+   </script>
    <script src="{{asset('js/app.js')}}"></script>
 
-   <script>
+<!--
+TODO:
+- bounding box entre deux villes selectionnées
+- cercle representant le co2 généré par les entrant et sortants d'une ville
 
-   </script>
+
+-->
     </body>
 </html>

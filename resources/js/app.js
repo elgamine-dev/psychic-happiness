@@ -117,7 +117,7 @@ function resetGroup(collec) {
 
     group = new L.featureGroup([...store.markers, store.homeMarker])
     group.addTo(layer)
-    map.fitBounds(group.getBounds())
+    map.fitBounds(group.getBounds(), {padding:[100, 100]})
 
 }
 
@@ -182,10 +182,19 @@ function serializeCommune (entry) {
             {section: "Déplacements Internes", entries:[
                 {...getDefinition('commune', 'inter.sansvoiture'), value: humanNumber(entry.inter.y2015.sansvoiture)},
                 {...getDefinition('commune', 'inter.voiture'), value: humanNumber(entry.inter.y2015.voiture)},
+                {...getDefinition('commune', 'inter.csp1'), value: humanNumber(entry.inter.y2015.csp1)},
+                {...getDefinition('commune', 'inter.csp2'), value: humanNumber(entry.inter.y2015.csp2)},
+                {...getDefinition('commune', 'inter.csp3'), value: humanNumber(entry.inter.y2015.csp3)},
             ]},
             {section: "Déplacements Externes", entries:[
                 {...getDefinition('commune', 'extra.voiture'), value: humanNumber(entry.extra.y2015.voiture)},
                 {...getDefinition('commune', 'extra.nb'), value: humanNumber(entry.extra.y2014.nb)},
+                {...getDefinition('commune', 'extra.communes'), value: humanNumber(entry.extra.y2014.communes)},
+                {...getDefinition('commune', 'extra.kms'), value: humanNumber(entry.extra.y2014.kms), postfix: "kms"},
+                {...getDefinition('commune', 'extra.heures'), value: humanNumber(entry.extra.y2014.heures), postfix: "heures"},
+                {...getDefinition('commune', 'extra.csp1'), value: humanNumber(entry.extra.y2015.csp1)},
+                {...getDefinition('commune', 'extra.csp2'), value: humanNumber(entry.extra.y2015.csp2)},
+                {...getDefinition('commune', 'extra.csp3'), value: humanNumber(entry.extra.y2015.csp3)},
             ]},
         ]
     } catch(e) {
@@ -413,9 +422,9 @@ function CommuneDefinition () {
         "extra.communes": {name:"Communes", prefix:'', postfix:'', definition: "Nombre de communes  vers lesquelles vont les actifs de la commune de résidence"},
         "intra.communes": {name:"Communes", prefix:'', postfix:'', definition: "Nombre de communes depuis lesquelles viennent les actifs qui travaillent dans la commune de résidence"},
         "intra.kms": {name:"Total kms", prefix:'', postfix:'', definition: "total de km parcourus tous les jours (A-R) en voiture par toutes les personnes actives de la commune de résidence qui travaillent en dehors de la commune de résidence"},
-        "extra.kms": {name:"Total heures", prefix:'', postfix:'', definition: "total de km parcourus tous les jours (A-R) en voiture par toutes les personnes actives extérieuresqui viennent travailler dans de la commune de résidence"},
-        "extra.heures": {name:"Total", prefix:'', postfix:'', definition: "temps passé tous les jours (A-R) en voiture par toutes les personnes actives de la commune de résidence qui travaillent en dehors de la commune de résidence"},
-        "intra.heures": {name:"Total", prefix:'', postfix:'', definition: "temps passé tous les jours (A-R) en voiture par toutes les personnes actives de la commune de résidence qui travaillent en dehors de la commune de résidence"},
+        "extra.kms": {name:"Total kms", prefix:'', postfix:'', definition: "total de km parcourus tous les jours (A-R) en voiture par toutes les personnes actives extérieuresqui viennent travailler dans de la commune de résidence"},
+        "extra.heures": {name:"Total heures", prefix:'', postfix:'', definition: "temps passé tous les jours (A-R) en voiture par toutes les personnes actives de la commune de résidence qui travaillent en dehors de la commune de résidence"},
+        "intra.heures": {name:"Total heures", prefix:'', postfix:'', definition: "temps passé tous les jours (A-R) en voiture par toutes les personnes actives de la commune de résidence qui travaillent en dehors de la commune de résidence"},
         "inter.nb": {name:"Nb actifs", prefix:'', postfix:'', definition: "Nombre de personnes actives dans la commune de résidence qui travaillent dans la commune de résidence"},
         "extra.nb": {name:"Nb actifs", prefix:'', postfix:'', definition: "Nombre de personnes actives dans la commune de résidence  qui travaillent en dehors de la commune de résidence"},
     }

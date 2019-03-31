@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Déplacements des actifs en Occitanie</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -119,6 +119,11 @@
             aside {
                 background-color: #333;
                 color: #ccc;
+                overflow:auto;
+            }
+            button {
+                background-color: rgb(32%, 32%, 32%);
+                border:0;
             }
         </style>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
@@ -133,11 +138,11 @@
                     @if($debug)
                     <button id="example">Tlse</button>
                     @endif
-                    <button action="center">Centrer</button>
                 </div>
                 <div class="cities">
                     <div class="origin city">
-                            <h3>Départ</h3>
+
+                            <h3>Départ <button action="center" title="centrer">💠</button></h3>
                             <div>
                                 <select name="city" id="city" class="city-select">
                                     <option value="">-</option>

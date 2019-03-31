@@ -96,12 +96,18 @@
 
             .cities {
                 display:flex;
+                margin-top:10px;
             }
-            .cities section {
+            .cities .city {
                 flex:50%;
-                padding:10px;
+                width: 50%;
+                padding: 0 10px 10px 10px;
             }
-            .cities section#origin {
+
+            .cities .city h3 {
+                margin-top:0;
+            }
+            .cities .origin {
                 border-right:1px solid #ccc;
             }
         </style>
@@ -113,21 +119,31 @@
     <body>
         <div id="app">
             <aside>
-                <div>
-                    <select name="city" id="city" class="city-select">
-                        <option value="">-</option>
-                        @foreach($cities as $c)
-                        <option value="{{$c}}">{{ucfirst($c)}}</option>
-                        @endforeach
-                    </select>
-                </div>
+
                 <div>
                     <button id="example">Tlse</button>
                     <button action="center">Centrer</button>
                 </div>
                 <div class="cities">
-                    <section id="origin"></section>
-                    <section id="destination"></section>
+                    <div class="origin city">
+                            <h3>Départ</h3>
+                            <div>
+                                <select name="city" id="city" class="city-select">
+                                    <option value="">-</option>
+                                    @foreach($cities as $c)
+                                    <option value="{{$c}}">{{ucfirst($c)}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        <section id="origin"></section>
+                    </div>
+                    <div class="destination city">
+                        <h3>Destination</h3>
+                        <div>
+                            <select name="dest" id="dest-select"></select>
+                        </div>
+                        <section id="destination"></section>
+                    </div>
                 </div>
 
             </aside>

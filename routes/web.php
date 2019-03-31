@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/api/trajets/{commune}', function( $commune) {
     return [
-        "par_trajet" => Trajet::where('field_commune', strtoupper($commune))->get(),
+        "par_trajet" => Trajet::where('field_commune', strtoupper($commune))->orderBy('field_travail_commune', 'asc')->get(),
         "par_commune" => Commune::where('field_commune', strtoupper($commune))->first()
     ];
 });

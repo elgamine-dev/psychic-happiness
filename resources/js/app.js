@@ -5,7 +5,8 @@ require('select2')
 let map;
 let group;
 let layer;
-let select;
+let originSelect;
+let destSelect;
 let originFragment;
 let destinationFragment;
 
@@ -15,6 +16,7 @@ let RedIcon = L.icon({
 
 const store = window.store =  {
     markers:[],
+    homeMarker:null,
     current: {}
 }
 
@@ -25,12 +27,14 @@ const ExtendedMarker = L.Marker.extend({
 })
 
 $(document).ready(function () {
-    select = $('.city-select')
+    originSelect = $('.city-select')
+    destSelect = $('#dest-select')
     originFragment = $('aside #origin')
     destinationFragment = $('aside #destination')
 
 
-    select.select2({ width: '100%' });
+    originSelect.select2({ width: '100%' });
+    destSelect.select2({ width: '100%', tags: true });
 
     map = L.map('map').setView([43.568, 1.404], 13);
 
@@ -43,11 +47,18 @@ $(document).ready(function () {
 
 function listeners() {
 
-    select.on('select2:select', ({ params }) => {
-        console.warn(params.data)
+    originSelect.on('select2:select', ({ params }) => {
         const id = params.data.id
-
         $.get(`/api/trajets/${id}`).then(processData)
+    })
+
+    destSelect.on('select2:select', ({params})=>{
+        const id = params.data.id;
+        console.log(id)
+
+        if(id !== null) {
+            store.markers[id].openPopup()
+        }
     })
 
     $("#example").on('click', ()=>{
@@ -71,9 +82,10 @@ function listeners() {
 
 function resetGroup(collec) {
 
+    store.markers = []
+
     if (map && group) {
         map.removeLayer(group)
-        store.markers = []
     }
 
     layer = L.layerGroup().addTo(map)
@@ -89,7 +101,7 @@ function resetGroup(collec) {
 
     center(collec[0].origin)
 
-    group = new L.featureGroup(store.markers)
+    group = new L.featureGroup([...store.markers, store.homeMarker])
     group.addTo(layer)
     map.fitBounds(group.getBounds())
 
@@ -103,6 +115,7 @@ function processData(data) {
     store.current = commune
     render(originFragment, {name:commune.nom, commune:commune})
     resetGroup(trajets)
+    populateDestSelect()
 }
 
 function updateDestination(data) {
@@ -151,6 +164,21 @@ function serializeCommune (entry) {
 
 }
 
+function populateDestSelect() {
+
+    const sel = destSelect.empty().trigger('change')
+    const values = store.markers.map((s, pos)=>{
+        const data = s.options._data.destination
+        return {id:pos, text: data.nom}
+    })
+
+    destSelect.select2({
+        data: [
+            {id:'', text:"-"},
+            ...values
+        ]
+    }).val(null).trigger('change')
+}
 function humanNumber (value) {
     return new Intl.NumberFormat('fr-FR', { maximumSignificantDigits: 3 }).format(value);
 }
@@ -163,7 +191,7 @@ function inconsistant(entry) {
 }
 
 function center({lon, lat, nom}) {
-    store.markers.push(L.marker([lon, lat], { icon: RedIcon }).bindPopup(nom));
+    store.homeMarker = L.marker([lon, lat], { icon: RedIcon }).bindPopup(nom);
     map.panTo(new L.LatLng(lon, lat))
 }
 
